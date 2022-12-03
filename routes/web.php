@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MangaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [MangaController::class, 'index'])->name('manga-index');
+Route::get('/mangas/show/{manga}', [MangaController::class, 'show'])->name('manga-show');
