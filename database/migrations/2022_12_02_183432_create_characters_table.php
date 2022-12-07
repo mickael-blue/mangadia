@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('characters', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Manga::class);
+            $table->foreignId('manga_id')->constrained();
             $table->string('name',255);
             $table->text('biography');
             $table->string('picture', 255);
