@@ -11,6 +11,8 @@ class Manga extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['title'];
+
     public function characters()
     {
         return $this->hasMany(Character::class);

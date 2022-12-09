@@ -10,6 +10,8 @@ class Character extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['manga_id', 'name', 'biography', 'picture'];
+
     public function manga()
     {
         return $this->belongsTo(Manga::class);

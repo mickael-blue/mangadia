@@ -14,7 +14,8 @@ class CharacterController extends Controller
      */
     public function index()
     {
-        //
+        $characters = Character::all();
+        return $characters->toJson();
     }
 
     /**
@@ -35,7 +36,15 @@ class CharacterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $status = Character::create($request->all());
+
+        if (Character::created($request->all())) {
+            $response = [
+                'status' => true,
+                'message' => "Enregistrement terminé avec succès",
+            ];
+        }
+        return ;
     }
 
     /**
@@ -46,7 +55,7 @@ class CharacterController extends Controller
      */
     public function show(Character $character)
     {
-        //
+
     }
 
     /**

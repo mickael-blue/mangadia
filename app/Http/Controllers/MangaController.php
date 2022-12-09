@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Manga;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class MangaController extends Controller
     public function index()
     {
         $mangas = Manga::all();
-        return view('mangas.index', compact('mangas'));
+        return $mangas->toJson();
     }
 
     /**
@@ -25,7 +26,8 @@ class MangaController extends Controller
      */
     public function create()
     {
-        //
+        $category = Category::all();
+        return view('mangas.create', compact('category'));
     }
 
     /**
@@ -58,7 +60,8 @@ class MangaController extends Controller
      */
     public function edit(Manga $manga)
     {
-        //
+        $category = Category::all();
+        return view('mangas.show', compact('manga','category'));
     }
 
     /**
