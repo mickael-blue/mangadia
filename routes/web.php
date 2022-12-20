@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\MangaController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,18 +16,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [MangaController::class, 'index'])->name('manga-index');
-// Mangas CRUD routes
-// Route::get('/mangas/show/{manga}', [MangaController::class, 'show'])->name('manga-show');
-// Route::get('/mangas/edit/{manga}', [MangaController::class, 'edit'])->name('manga-edit');
-// Route::post('/mangas/update/{manga}', [MangaController::class, 'update'])->name('manga-update');
-// Route::post('/mangas/create/{manga}', [MangaController::class, 'create'])->name('manga-create');
-// Route::post('/mangas/store/{manga}', [MangaController::class, 'store'])->name('manga-store');
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
-// //Characters CRUD routes
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route::get('/characters/show/{character}', [CharacterController::class, 'show'])->name('character-show');
-// Route::get('/characters/edit/{character}', [CharacterController::class, 'edit'])->name('character-edit');
-// Route::post('/characters/update/{character}', [CharacterController::class, 'update'])->name('character-update');
-// Route::post('/characters/create/{character}', [CharacterController::class, 'create'])->name('character-create');
-// Route::post('/characters/store/{character}', [CharacterController::class, 'store'])->name('character-store');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
