@@ -95,7 +95,7 @@ export default function Welcome(props) {
                                             href="https://laracasts.com"
                                             className="underline text-gray-900 dark:text-white"
                                         >
-                                            Laracasts
+                                            Laracasts test
                                         </a>
                                     </div>
                                 </div>

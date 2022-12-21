@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Manga;
 use App\Models\Character;
-use Illuminate\Http\Request;
+use App\Http\Resources\CharacterResource;
+use App\Http\Resources\CharacterCollection;
+use Illuminate\Support\Facades\Request;
+use App\Http\Requests\CharacterStoreRequest;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\CharacterUpdateRequest;
+use App\Http\Resources\MangaCollection;
 
 class CharacterController extends Controller
 {
@@ -14,8 +22,13 @@ class CharacterController extends Controller
      */
     public function index()
     {
-        $characters = Character::all();
-        return $characters->toJson();
+        return Inertia::render('Characters/Index', [
+            'characters' => new CharacterCollection(
+                Character::orderBy('id')
+                    ->paginate()
+                    ->appends(Request::all())
+            ),
+        ]);
     }
 
     /**
@@ -25,7 +38,10 @@ class CharacterController extends Controller
      */
     public function create()
     {
-        //
+        $mangas = Manga::all();
+        return Inertia::render('Characters/Create', [
+            'mangas' => new MangaCollection($mangas),
+        ]);
     }
 
     /**
@@ -34,28 +50,10 @@ class CharacterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CharacterStoreRequest $request)
     {
-        $status = Character::create($request->all());
-
-        if (Character::created($request->all())) {
-            $response = [
-                'status' => true,
-                'message' => "Enregistrement terminé avec succès",
-            ];
-        }
-        return ;
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Character  $character
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Character $character)
-    {
-
+        Character::create($request->validated());
+        return Redirect::route('character.index');
     }
 
     /**
@@ -66,7 +64,11 @@ class CharacterController extends Controller
      */
     public function edit(Character $character)
     {
-        //
+        $mangas = Manga::all();
+        return Inertia::render('Characters/Edit', [
+            'character' => new CharacterResource($character),
+            'mangas' => new MangaCollection($mangas),
+        ]);
     }
 
     /**
@@ -76,9 +78,10 @@ class CharacterController extends Controller
      * @param  \App\Models\Character  $character
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Character $character)
+    public function update(CharacterUpdateRequest $request, Character $character)
     {
-        //
+        $character->update($request->validated());
+        return Redirect::route('character.index');
     }
 
     /**
@@ -89,6 +92,7 @@ class CharacterController extends Controller
      */
     public function destroy(Character $character)
     {
-        //
+        $character->delete();
+        return Redirect::route('character.index');
     }
 }

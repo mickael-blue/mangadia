@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Manga;
+use App\Models\Category;
+use App\Models\Character;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,11 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Category::factory()
+            ->count(2)
+            ->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $category = Category::factory()
+            ->count(1)
+            ->create();
+
+        Manga::factory()
+            ->count(3)
+            ->hasAttached($category, ['category_id' => 1])
+            ->create();
+
+        Character::factory()
+        ->count(25)
+        ->create();
     }
 }

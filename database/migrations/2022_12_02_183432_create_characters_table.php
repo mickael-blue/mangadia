@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('manga_id')->constrained();
             $table->string('name',255);
-            $table->text('biography');
-            $table->string('picture', 255);
+            $table->text('biography')->nullable();
+            $table->string('picture', 255)->nullable();
             $table->timestamps();
         });
     }

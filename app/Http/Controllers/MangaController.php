@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use Inertia\Inertia;
 use App\Models\Manga;
-use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Http\Resources\MangaResource;
+use App\Http\Resources\MangaCollection;
+use Illuminate\Support\Facades\Request;
+use App\Http\Requests\MangaStoreRequest;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\MangaUpdateRequest;
+use App\Http\Resources\CategoryCollection;
 
 class MangaController extends Controller
 {
@@ -15,8 +22,13 @@ class MangaController extends Controller
      */
     public function index()
     {
-        $mangas = Manga::all();
-        return $mangas->toJson();
+        return Inertia::render('Mangas/Index', [
+            'mangas' => new MangaCollection(
+                Manga::orderBy('id')
+                    ->paginate()
+                    ->appends(Request::all())
+            ),
+        ]);
     }
 
     /**
@@ -27,7 +39,7 @@ class MangaController extends Controller
     public function create()
     {
         $category = Category::all();
-        return view('mangas.create', compact('category'));
+        return Inertia::render('Mangas/Create', compact('category'));
     }
 
     /**
@@ -36,20 +48,10 @@ class MangaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MangaStoreRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Manga  $manga
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Manga $manga)
-    {
-        return view('mangas.show', compact('manga'));
+        Manga::create($request->validated());
+        return Redirect::route('manga.index');
     }
 
     /**
@@ -60,8 +62,11 @@ class MangaController extends Controller
      */
     public function edit(Manga $manga)
     {
-        $category = Category::all();
-        return view('mangas.show', compact('manga','category'));
+        $categories = Category::all();
+        return Inertia::render('Mangas/Edit', [
+            'manga' => new MangaResource($manga),
+            'categories' => new CategoryCollection($categories)
+        ]);
     }
 
     /**
@@ -71,9 +76,12 @@ class MangaController extends Controller
      * @param  \App\Models\Manga  $manga
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Manga $manga)
+    public function update(MangaUpdateRequest $request, Manga $manga)
     {
-        //
+        $manga->update(
+            $request->validated()
+        );
+        return Redirect::route('manga.index');
     }
 
     /**
@@ -84,6 +92,7 @@ class MangaController extends Controller
      */
     public function destroy(Manga $manga)
     {
-        //
+        $manga->delete();
+        return Redirect::route('manga.index');
     }
 }
