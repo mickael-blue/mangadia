@@ -47,7 +47,7 @@ export default function Index({ auth }) {
         >
             <Head title="Character" />
 
-            <div className="py-12">
+            <div className="py-5">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <form onSubmit={submit} className="mt-6 space-y-6">
                         <div>
