@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Manga;
 use App\Models\Character;
+use App\Http\Resources\MangaCollection;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Resources\CharacterResource;
 use App\Http\Resources\CharacterCollection;
-use Illuminate\Support\Facades\Request;
 use App\Http\Requests\CharacterStoreRequest;
-use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\CharacterUpdateRequest;
-use App\Http\Resources\MangaCollection;
 
 class CharacterController extends Controller
 {
@@ -52,7 +53,12 @@ class CharacterController extends Controller
      */
     public function store(CharacterStoreRequest $request)
     {
-        Character::create($request->validated());
+        // Storage::disk('public')->put('characters', $request->picture);
+        $character = Character::create($request->validated());
+        $path = $request->picture->storeAs('characters', $character->id.'.'.$request->picture->extension());
+        $character->update([
+            'picture' => $path,
+        ]);
         return Redirect::route('character.index');
     }
 
@@ -80,7 +86,11 @@ class CharacterController extends Controller
      */
     public function update(CharacterUpdateRequest $request, Character $character)
     {
-        $character->update($request->validated());
+        dd($character);
+        $path = $request->picture->storeAs('characters', $character->id.'.'.$request->picture->extension());
+        $data = $request->validated();
+        $data['picture'] = $path;
+        $character->update($data);
         return Redirect::route('character.index');
     }
 

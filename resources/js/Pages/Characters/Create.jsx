@@ -6,6 +6,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import SelectInput from '@/Components/SelectInput';
 import TextareaInput from '@/Components/TextareaInput';
+import FileInput from "@/Components/FileInput";
 import { Transition } from '@headlessui/react';
 import { Head, useForm, usePage } from "@inertiajs/inertia-react";
 
@@ -16,7 +17,7 @@ export default function Index({ auth }) {
             label: title
         }
     });
-    const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, post, errors, progress, processing, recentlySuccessful } = useForm({
         name: '',
         manga_id: mangasOption[0].key,
         biography: '',
@@ -99,6 +100,30 @@ export default function Index({ auth }) {
                             <InputError
                                 className="mt-2"
                                 message={errors.biography}
+                            />
+                        </div>
+
+                        <div>
+                            <img src={data.picture} alt={data.name} />
+                            <InputLabel for="picture" value="Picture" />
+
+                            <FileInput
+                                id="picture"
+                                className="mt-1 block w-full"
+                                value={data.picture}
+                                handleChange={(e) =>
+                                    setData("picture", e.target.files[0])
+                                }
+                            />
+                            {progress && (
+                                <progress value={progress.percentage} max="100">
+                                    {progress.percentage}%
+                                </progress>
+                            )}
+
+                            <InputError
+                                className="mt-2"
+                                message={errors.picture}
                             />
                         </div>
 

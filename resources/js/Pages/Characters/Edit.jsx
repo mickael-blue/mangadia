@@ -1,39 +1,44 @@
 import React from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import DangerButton from '@/Components/DangerButton';
-import TextInput from '@/Components/TextInput';
-import SelectInput from '@/Components/SelectInput';
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import DangerButton from "@/Components/DangerButton";
+import TextInput from "@/Components/TextInput";
+import SelectInput from "@/Components/SelectInput";
 import TextareaInput from "@/Components/TextareaInput";
-import { Transition } from '@headlessui/react';
+import FileInput from "@/Components/FileInput";
+import { Transition } from "@headlessui/react";
 import { Head, useForm, usePage } from "@inertiajs/inertia-react";
 
 export default function Index({ auth }) {
     const character = usePage().props.character.data;
-    const mangasOption = usePage().props.mangas.data.map(({id, title}) => {
+    const mangasOption = usePage().props.mangas.data.map(({ id, title }) => {
         return {
             key: id,
-            label: title
-        }
+            label: title,
+        };
     });
 
-    const { data, setData, put, delete: destroy, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, post, delete: destroy, progress, errors, processing, recentlySuccessful, } = useForm({
         name: character.name,
         manga_id: character.manga.id,
         biography: character.biography,
-        picture: character.picture
+        picture: '',
     });
 
     const removeCharacter = (e) => {
-        e.preventDefault()
-        destroy(route('character.destroy', character.id))
-    }
+        e.preventDefault();
+        destroy(route("character.destroy", character.id));
+    };
 
     const submit = (e) => {
         e.preventDefault();
-        put(route('character.update', character.id));
+        console.log(character);
+        post(route("character.update", character.id), {
+            forceFormData: true,
+            _method: 'put',
+        });
     };
 
     return (
@@ -71,7 +76,7 @@ export default function Index({ auth }) {
                             />
                         </div>
                         <div>
-                            <InputLabel for="manga" value="Manga"/>
+                            <InputLabel for="manga" value="Manga" />
 
                             <SelectInput
                                 id="manga"
@@ -91,7 +96,7 @@ export default function Index({ auth }) {
                         </div>
 
                         <div>
-                            <InputLabel for="biography" value="Biography"/>
+                            <InputLabel for="biography" value="Biography" />
 
                             <TextareaInput
                                 id="biography"
@@ -107,11 +112,43 @@ export default function Index({ auth }) {
                                 message={errors.biography}
                             />
                         </div>
+
+                        <div>
+                            <img src={data.picture} alt={data.name} />
+                            <InputLabel for="picture" value="Picture" />
+
+                            <FileInput
+                                id="picture"
+                                className="mt-1 block w-full"
+                                value={data.picture}
+                                handleChange={(e) =>{
+                                    let file = e.target.files[0];
+
+                                    if (file !== undefined) {
+                                        setData("picture", file)
+                                    }
+                                }}
+                            />
+                            {progress && (
+                                <progress value={progress.percentage} max="100">
+                                    {progress.percentage}%
+                                </progress>
+                            )}
+
+                            <InputError
+                                className="mt-2"
+                                message={errors.picture}
+                            />
+                        </div>
+
                         <div className="flex items-center gap-4">
                             <PrimaryButton processing={processing}>
                                 Save
                             </PrimaryButton>
-                            <DangerButton onClick={removeCharacter} processing={processing}>
+                            <DangerButton
+                                onClick={removeCharacter}
+                                processing={processing}
+                            >
                                 Remove
                             </DangerButton>
 

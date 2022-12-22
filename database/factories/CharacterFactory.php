@@ -29,7 +29,7 @@ class CharacterFactory extends Factory
             'manga_id' => Manga::all()->random(),
             'name' => fake()->name(),
             'biography' => fake()->text(),
-            'picture' => fake()->imageUrl(640, 480, 'characters', true),
+            'picture_path' => fake()->imageUrl(640, 480, 'characters', true),
         ];
     }
 }
