@@ -10,7 +10,7 @@ class Character extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['manga_id', 'name', 'biography', 'picture'];
+    protected $fillable = ['manga_id', 'name', 'biography', 'picture_path'];
 
     public function manga()
     {

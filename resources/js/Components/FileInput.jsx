@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useRef } from 'react';
 
 export default forwardRef(function FileInput(
-    { type = 'file', name, id, value, className, isFocused, handleChange },
+    {  name, id, className, isFocused, handleChange },
     ref
 ) {
     const input = ref ? ref : useRef();
@@ -15,12 +15,10 @@ export default forwardRef(function FileInput(
     return (
         <div className="flex flex-col items-start">
             <input
-                type={type}
+                type="file"
                 name={name}
                 id={id}
-                value={value}
                 className={
-                    `border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm ` +
                     className
                 }
                 ref={input}

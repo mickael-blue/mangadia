@@ -17,7 +17,8 @@ class CharacterStoreRequest extends FormRequest
             'name' => ['required', 'max:100'],
             'manga_id' => ['required'],
             'biography' => ['max:255'],
-            'picture' => ['image']
+            'picture' => ['image'],
+            'picture_path' => ['max:255'],
         ];
     }
 }

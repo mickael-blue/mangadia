@@ -20,24 +20,28 @@ export default function Index({ auth }) {
         };
     });
 
-    const { data, setData, post, delete: destroy, progress, errors, processing, recentlySuccessful, } = useForm({
+    const { data, setData, post, progress, errors, processing, recentlySuccessful } = useForm({
         name: character.name,
         manga_id: character.manga.id,
         biography: character.biography,
-        picture: '',
+        picture_path: character.picture_path,
+        picture: null,
     });
 
     const removeCharacter = (e) => {
         e.preventDefault();
-        destroy(route("character.destroy", character.id));
+        if (confirm('Are you sure you want to delete this organization?')) {
+            Inertia.delete(route('character.destroy', organization.id));
+        }
     };
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
-        console.log(character);
         post(route("character.update", character.id), {
             forceFormData: true,
-            _method: 'put',
+            onFinish: (e) => {
+                data.picture_path = 'characters/'+data.picture.name
+            }
         });
     };
 
@@ -114,20 +118,15 @@ export default function Index({ auth }) {
                         </div>
 
                         <div>
-                            <img src={data.picture} alt={data.name} />
+                            <img width="300" src={`/storage/`+data.picture_path} alt={data.name} />
                             <InputLabel for="picture" value="Picture" />
 
                             <FileInput
                                 id="picture"
                                 className="mt-1 block w-full"
-                                value={data.picture}
-                                handleChange={(e) =>{
-                                    let file = e.target.files[0];
-
-                                    if (file !== undefined) {
-                                        setData("picture", file)
-                                    }
-                                }}
+                                handleChange={(e) =>
+                                    setData("picture", e.target.files[0])
+                                }
                             />
                             {progress && (
                                 <progress value={progress.percentage} max="100">
@@ -141,7 +140,7 @@ export default function Index({ auth }) {
                             />
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-space gap-4">
                             <PrimaryButton processing={processing}>
                                 Save
                             </PrimaryButton>

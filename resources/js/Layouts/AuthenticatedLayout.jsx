@@ -30,6 +30,9 @@ export default function Authenticated({ auth, header, children }) {
                                 <NavLink href={route('character.index')} active={route().current('character.index')}>
                                     Personnage
                                 </NavLink>
+                                <NavLink href={route('battle.index')} active={route().current('battle.index')}>
+                                    Battles
+                                </NavLink>
                             </div>
                         </div>
 

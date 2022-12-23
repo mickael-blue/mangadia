@@ -53,12 +53,9 @@ class CharacterController extends Controller
      */
     public function store(CharacterStoreRequest $request)
     {
-        // Storage::disk('public')->put('characters', $request->picture);
         $character = Character::create($request->validated());
-        $path = $request->picture->storeAs('characters', $character->id.'.'.$request->picture->extension());
-        $character->update([
-            'picture' => $path,
-        ]);
+        $character->picture_path = $request->picture->storeAs('characters', $request->picture->getClientOriginalName(), 'public');
+        $character->save();
         return Redirect::route('character.index');
     }
 
@@ -86,12 +83,10 @@ class CharacterController extends Controller
      */
     public function update(CharacterUpdateRequest $request, Character $character)
     {
-        dd($character);
-        $path = $request->picture->storeAs('characters', $character->id.'.'.$request->picture->extension());
-        $data = $request->validated();
-        $data['picture'] = $path;
-        $character->update($data);
-        return Redirect::route('character.index');
+        $character->update($request->validated());
+        $character->picture_path = $request->picture->storeAs('characters', $request->picture->getClientOriginalName(), 'public');
+        $character->save();
+        return Redirect::route('character.edit',$character->id);
     }
 
     /**

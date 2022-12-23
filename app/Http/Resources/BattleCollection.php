@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class CharacterCollection extends ResourceCollection
+class BattleCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,7 +15,14 @@ class CharacterCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->collection->map->only(
-            'id', 'name', 'manga', 'picture_path'
+            'id',
+            'name',
+            'character1',
+            'character2',
+            'vote_1',
+            'vote_2',
+            'date_start',
+            'date_end',
         );
     }
 }

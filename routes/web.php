@@ -2,8 +2,9 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\MangaController;
+use App\Http\Controllers\BattleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CharacterController;
 
@@ -18,14 +19,7 @@ use App\Http\Controllers\CharacterController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [FrontController::class, 'home'])->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -49,8 +43,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/character', [CharacterController::class, 'create'])->name('character.create');
     Route::post('/character', [CharacterController::class, 'store'])->name('character.store');
     Route::get('/character/{character}', [CharacterController::class, 'edit'])->name('character.edit');
-    Route::put('/character/{character}', [CharacterController::class, 'update'])->name('character.update');
+    Route::post('/character/update/{character}', [CharacterController::class, 'update'])->name('character.update');
     Route::delete('/character/{character}', [CharacterController::class, 'destroy'])->name('character.destroy');
+
+    // Characters Routes
+    Route::post('/battle/vote', [BattleController::class, 'vote'])->name('battle.vote');
 });
 
 require __DIR__.'/auth.php';
